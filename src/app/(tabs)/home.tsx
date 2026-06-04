@@ -1,32 +1,31 @@
 import { getCurrentLocation } from "@/services/location.service";
+import { getWeather } from "@/services/weather";
 import { useLocationStore } from "@/store/location.store";
-import { useEffect } from "react";
-import {
-    Platform,
-    ScrollView,
-    StyleSheet,
-    Text,
-    View
-} from "react-native";
-import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import {
   Feather,
   MaterialCommunityIcons,
 } from "@expo/vector-icons";
+import { useEffect, useState } from "react";
+import {
+  ActivityIndicator,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+  Image
+} from "react-native";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
+import { WeatherResponse } from "@/types/weather";
 
 
-
-const weather = {
-  city: "Nairobi",
-  temperature: 24,
-  condition: "Partly Cloudy",
-  insight:
-    "Rain expected later this afternoon. Consider completing outdoor activities before 4PM.",
-};
 
 export default function HomeScreen() {
 
-    const insets = useSafeAreaInsets();
+const [weather, setWeather] =
+  useState<WeatherResponse | null>(null);
+const [loading, setLoading] = useState(true);
+
 
 const setLocation =
   useLocationStore((state) => state.setLocation);
@@ -37,23 +36,67 @@ const city =
 useEffect(() => {
   async function loadLocation() {
     try {
-      const location =
-        await getCurrentLocation();
+      const location = await getCurrentLocation();
 
-      console.log("LOCATION", location);
+      const data = await getWeather(
+        location.latitude,
+        location.longitude
+      );
+
+      setWeather(data);
 
       setLocation(
-  location.latitude,
-  location.longitude,
-  location.city
-);
+        location.latitude,
+        location.longitude,
+        location.city
+      );
+
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoading(false);
     }
   }
 
   loadLocation();
 }, []);
+
+if (loading) {
+  return (
+    <SafeAreaView style={styles.loaderContainer}>
+      <Text style={styles.loaderTitle}>
+  AmbiCast
+</Text>
+
+<ActivityIndicator
+  size="large"
+  color="#2EE6C5"
+/>
+
+<Text style={styles.loaderText}>
+  Fetching weather data...
+</Text>
+    </SafeAreaView>
+  );
+}
+
+if (!weather) {
+  return (
+    <SafeAreaView style={styles.container}>
+      <Text style={{ color: "white" }}>
+        Unable to load weather data
+      </Text>
+    </SafeAreaView>
+  );
+}
+
+const now = new Date();
+
+const upcomingHours = weather.hourly
+  .filter((hour: any) => {
+    return new Date(hour.time) >= now;
+  })
+  .slice(0, 8);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -73,23 +116,11 @@ useEffect(() => {
           <Text style={styles.city}>{city} 📍</Text>
 
           <Text style={styles.temp}>
-            {weather.temperature}°
+            {Math.round(weather.current.temperature)}°
           </Text>
 
-          <Text style={styles.condition}>
-            {weather.condition}
-          </Text>
         </View>
 
-        <View style={styles.card}>
-          <Text style={styles.cardTitle}>
-            AI Insight
-          </Text>
-
-          <Text style={styles.cardText}>
-            {weather.insight}
-          </Text>
-        </View>
 
         <View style={styles.metrics}>
           <View style={styles.metricCard}>
@@ -105,7 +136,7 @@ useEffect(() => {
     />
   </View>
             <Text style={styles.metricValue}>
-              72%
+              {weather.hourly[0].humidity}
             </Text>
           </View>
 
@@ -123,7 +154,7 @@ useEffect(() => {
 
              </View>
             <Text style={styles.metricValue}>
-              12 km/h
+              {weather.current.wind_speed}
             </Text>
           </View>
 
@@ -139,7 +170,7 @@ useEffect(() => {
     />
              </View>
             <Text style={styles.metricValue}>
-              4
+              {weather.hourly[0].uv_index}
             </Text>
           </View>
 
@@ -155,20 +186,67 @@ useEffect(() => {
     />
              </View>
             <Text style={styles.metricValue}>
-              26°
+              {weather.hourly[0].feels_like}
             </Text>
           </View>
         </View>
 
-        <View style={styles.card}>
-          <Text style={styles.cardTitle}>
-            Coming Next
-          </Text>
+        <View style={styles.sunCard}>
+  <View>
+    <Text style={styles.sunLabel}>
+      Sunrise
+    </Text>
 
-          <Text style={styles.cardText}>
-           integration
-          </Text>
-        </View>
+    <Text style={styles.sunTime}>
+      {weather.daily[0].sunrise.slice(11)}
+    </Text>
+  </View>
+
+  <View>
+    <Text style={styles.sunLabel}>
+      Sunset
+    </Text>
+
+    <Text style={styles.sunTime}>
+      {weather.daily[0].sunset.slice(11)}
+    </Text>
+  </View>
+</View>
+
+
+        <Text style={styles.sectionTitle}>
+  Next Hours
+</Text>
+
+<ScrollView
+  horizontal
+  showsHorizontalScrollIndicator={false}
+  style={{ marginBottom: 2 }}
+>
+{upcomingHours.map((hour) => (
+    <View
+      key={hour.time}
+      style={styles.hourCard}
+    >
+      <Text style={styles.hourTime}>
+        {new Date(hour.time).toLocaleTimeString([], {
+          hour: "numeric",
+        })}
+      </Text>
+
+      <Text style={styles.hourTemp}>
+        {Math.round(hour.temperature)}°
+      </Text>
+
+      <Text style={styles.hourRain}>
+        {hour.precipitation_probability}%
+      </Text>
+    </View>
+))}
+</ScrollView>
+
+
+        
       </ScrollView>
     </SafeAreaView>
   );
@@ -184,7 +262,24 @@ const styles = StyleSheet.create({
     backgroundColor: BG,
     paddingHorizontal: 20,
   },
+  loaderTitle: {
+  color: "white",
+  fontSize: 32,
+  fontWeight: "700",
+  marginBottom: 24,
+},
+loaderContainer: {
+  flex: 1,
+  backgroundColor: BG,
+  justifyContent: "center",
+  alignItems: "center",
+},
 
+loaderText: {
+  color: "#94A3B8",
+  marginTop: 16,
+  fontSize: 16,
+},
   greeting: {
     color: "#94A3B8",
     marginTop: 16,
@@ -273,4 +368,49 @@ metricHeader: {
     fontWeight: "700",
     marginTop: 4,
   },
+  sectionTitle: {
+  color: "white",
+  fontSize: 18,
+  fontWeight: "600",
+  marginBottom: 10,
+  marginTop: 14,
+},
+hourCard: {
+  backgroundColor: CARD,
+  borderRadius: 18,
+  padding: 16,
+  width: 90,
+  marginRight: 12,
+  alignItems: "center",
+},
+hourTime: {
+  color: "#94A3B8",
+  fontSize: 13,
+},
+hourTemp: {
+  color: "white",
+  fontSize: 24,
+  fontWeight: "700",
+  marginTop: 8,
+},
+hourRain: {
+  color: ACCENT,
+  marginTop: 4,
+},
+sunCard: {
+  backgroundColor: CARD,
+  borderRadius: 20,
+  padding: 20,
+  flexDirection: "row",
+  justifyContent: "space-between",
+},
+sunLabel: {
+  color: "#94A3B8",
+  marginBottom: 8,
+},
+sunTime: {
+  color: "white",
+  fontSize: 22,
+  fontWeight: "700",
+},
 });
