@@ -9,6 +9,10 @@ import {
     View
 } from "react-native";
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
+import {
+  Feather,
+  MaterialCommunityIcons,
+} from "@expo/vector-icons";
 
 
 
@@ -89,36 +93,67 @@ useEffect(() => {
 
         <View style={styles.metrics}>
           <View style={styles.metricCard}>
-            <Text style={styles.metricLabel}>
-              Humidity
-            </Text>
+            <View style={styles.metricHeader}>
+    <Text style={styles.metricLabel}>
+      Humidity
+    </Text>
+
+    <Feather
+      name="droplet"
+      size={20}
+      color="#2EE6C5"
+    />
+  </View>
             <Text style={styles.metricValue}>
               72%
             </Text>
           </View>
 
           <View style={styles.metricCard}>
+             <View style={styles.metricHeader}>
+
+            <Feather
+      name="wind"
+      size={24}
+      color="#2EE6C5"
+    />
+
             <Text style={styles.metricLabel}>
               Wind
             </Text>
+             </View>
             <Text style={styles.metricValue}>
               12 km/h
             </Text>
           </View>
 
           <View style={styles.metricCard}>
+             <View style={styles.metricHeader}>
+              <Feather
+      name="sun"
+      size={24}
+      color="#2EE6C5"
+    />
             <Text style={styles.metricLabel}>
               UV Index
             </Text>
+             </View>
             <Text style={styles.metricValue}>
               4
             </Text>
           </View>
 
           <View style={styles.metricCard}>
+             <View style={styles.metricHeader}>
+            <MaterialCommunityIcons
+      name="thermometer"
+      size={24}
+      color="#2EE6C5"
+    />
             <Text style={styles.metricLabel}>
               Feels Like
             </Text>
+             </View>
             <Text style={styles.metricValue}>
               26°
             </Text>
@@ -223,15 +258,21 @@ const styles = StyleSheet.create({
     padding: 18,
     marginBottom: 14,
   },
+metricHeader: {
+  flexDirection: "row",
+  justifyContent: "space-between",
+  alignItems: "center",
+},
 
   metricLabel: {
     color: "#94A3B8",
+    marginTop: 7,
   },
 
   metricValue: {
     color: "white",
     fontSize: 24,
     fontWeight: "700",
-    marginTop: 8,
+    marginTop: 4,
   },
 });
