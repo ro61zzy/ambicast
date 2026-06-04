@@ -397,7 +397,7 @@ infoText: {
 
   sectionTitle: {
     color: "white",
-    fontSize: 32,
+    fontSize: 22,
     fontWeight: "700",
     marginTop: 32,
     marginBottom: 20,
@@ -412,9 +412,9 @@ infoText: {
   metricCard: {
     width: "48%",
     backgroundColor: CARD,
-    borderRadius: 24,
-    padding: 20,
-    marginBottom: 16,
+    borderRadius: 12,
+    padding: 12,
+    marginBottom: 12,
   },
 
   metricLabel: {
@@ -423,21 +423,21 @@ infoText: {
 
   metricValue: {
     color: "white",
-    fontSize: 28,
+    fontSize: 25,
     fontWeight: "700",
     marginTop: 10,
   },
 
   recommendationCard: {
     backgroundColor: CARD,
-    borderRadius: 24,
-    padding: 24,
+    borderRadius: 12,
+    padding: 18,
     marginTop: 12,
   },
 
   recommendationTitle: {
     color: "white",
-    fontSize: 22,
+    fontSize: 20,
     fontWeight: "700",
     marginBottom: 16,
   },
