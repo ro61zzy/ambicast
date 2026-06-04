@@ -111,16 +111,16 @@ useEffect(() => {
 
           <View style={styles.metricCard}>
              <View style={styles.metricHeader}>
-
+            <Text style={styles.metricLabel}>
+              Wind
+            </Text>
             <Feather
       name="wind"
       size={24}
       color="#2EE6C5"
     />
 
-            <Text style={styles.metricLabel}>
-              Wind
-            </Text>
+
              </View>
             <Text style={styles.metricValue}>
               12 km/h
@@ -129,14 +129,14 @@ useEffect(() => {
 
           <View style={styles.metricCard}>
              <View style={styles.metricHeader}>
+            <Text style={styles.metricLabel}>
+              UV Index
+            </Text>
               <Feather
       name="sun"
       size={24}
       color="#2EE6C5"
     />
-            <Text style={styles.metricLabel}>
-              UV Index
-            </Text>
              </View>
             <Text style={styles.metricValue}>
               4
@@ -145,14 +145,14 @@ useEffect(() => {
 
           <View style={styles.metricCard}>
              <View style={styles.metricHeader}>
+            <Text style={styles.metricLabel}>
+              Feels Like
+            </Text>
             <MaterialCommunityIcons
       name="thermometer"
       size={24}
       color="#2EE6C5"
     />
-            <Text style={styles.metricLabel}>
-              Feels Like
-            </Text>
              </View>
             <Text style={styles.metricValue}>
               26°
