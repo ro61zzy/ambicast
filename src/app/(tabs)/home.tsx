@@ -31,13 +31,13 @@ useEffect(() => {
       const location =
         await getCurrentLocation();
 
-      console.log(location);
+      console.log("LOCATION", location);
 
       setLocation(
-        location.latitude,
-        location.longitude,
-        "Current Location"
-      );
+  location.latitude,
+  location.longitude,
+  location.city
+);
     } catch (error) {
       console.log(error);
     }
