@@ -1,3 +1,6 @@
+import { useEffect } from "react";
+import { getCurrentLocation } from "@/services/location.service";
+import { useLocationStore } from "@/store/location.store";
 import {
   SafeAreaView,
   ScrollView,
@@ -15,6 +18,34 @@ const weather = {
 };
 
 export default function HomeScreen() {
+
+const setLocation =
+  useLocationStore((state) => state.setLocation);
+
+const city =
+  useLocationStore((state) => state.city);
+
+useEffect(() => {
+  async function loadLocation() {
+    try {
+      const location =
+        await getCurrentLocation();
+
+      console.log(location);
+
+      setLocation(
+        location.latitude,
+        location.longitude,
+        "Current Location"
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  loadLocation();
+}, []);
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView
@@ -26,7 +57,7 @@ export default function HomeScreen() {
         <Text style={styles.title}>AmbiCast</Text>
 
         <View style={styles.hero}>
-          <Text style={styles.city}>{weather.city}</Text>
+          <Text style={styles.city}>{city}</Text>
 
           <Text style={styles.temp}>
             {weather.temperature}°
