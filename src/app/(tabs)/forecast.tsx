@@ -5,6 +5,7 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
+import { useLocationStore } from "@/store/location.store";
 
 const hourlyForecast = [
   { time: "Now", temp: 24 },
@@ -15,9 +16,22 @@ const hourlyForecast = [
   { time: "7 PM", temp: 21 },
 ];
 
-
+const dailyForecast = [
+  { day: "Thu", high: 24, low: 18, icon: "🌤" },
+  { day: "Fri", high: 22, low: 17, icon: "🌧" },
+  { day: "Sat", high: 27, low: 19, icon: "☀️" },
+  { day: "Sun", high: 21, low: 16, icon: "⛈" },
+  { day: "Mon", high: 25, low: 18, icon: "🌤" },
+  { day: "Tue", high: 26, low: 19, icon: "☀️" },
+  { day: "Wed", high: 23, low: 17, icon: "🌧" },
+];
 
 export default function ForecastScreen() {
+
+  const city = useLocationStore(
+  (state) => state.city
+);
+
   return (
      <SafeAreaView style={styles.container}>
 
@@ -32,7 +46,7 @@ export default function ForecastScreen() {
       </Text>
 
       <Text style={styles.location}>
-        Kiambu County
+        {city}
       </Text>
 
       <View style={styles.summaryCard}>
@@ -72,9 +86,32 @@ export default function ForecastScreen() {
         ))}
       </ScrollView>
 
-     
+      <Text style={styles.sectionTitle}>
+        7 Day Forecast
+      </Text>
 
-     
+      <View style={styles.dailyContainer}>
+        {dailyForecast.map((day) => (
+          <View
+            key={day.day}
+            style={styles.dailyRow}
+          >
+            <Text style={styles.day}>
+              {day.day}
+            </Text>
+
+            <Text style={styles.icon}>
+              {day.icon}
+            </Text>
+
+            <View style={{ flex: 1 }} />
+
+            <Text style={styles.tempRange}>
+              {day.high}° / {day.low}°
+            </Text>
+          </View>
+        ))}
+      </View>
     </ScrollView>
      </SafeAreaView>
   );
@@ -135,15 +172,15 @@ const styles = StyleSheet.create({
     width: 90,
     backgroundColor: CARD,
     borderRadius: 20,
-    padding: 16,
-    marginRight: 12,
+    padding: 14,
+    marginRight: 10,
     alignItems: "center",
-    marginBottom: 24,
+    marginBottom: 20,
   },
 
   hourTime: {
     color: "#94A3B8",
-    marginBottom: 12,
+    marginBottom: 8,
   },
 
   hourTemp: {
@@ -161,23 +198,23 @@ const styles = StyleSheet.create({
   dailyRow: {
     flexDirection: "row",
     alignItems: "center",
-    paddingVertical: 16,
+    paddingVertical: 14,
     paddingHorizontal: 8,
   },
 
   day: {
     color: "white",
     width: 50,
-    fontSize: 16,
+    fontSize: 14,
   },
 
   icon: {
-    fontSize: 22,
+    fontSize: 15,
   },
 
   tempRange: {
     color: "white",
     fontWeight: "600",
-    fontSize: 16,
+    fontSize: 14,
   },
 });

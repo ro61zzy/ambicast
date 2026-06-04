@@ -166,9 +166,7 @@ useEffect(() => {
           </Text>
 
           <Text style={styles.cardText}>
-            Hourly forecasts, weather charts,
-            image analysis, and AI-powered
-            recommendations.
+           integration
           </Text>
         </View>
       </ScrollView>
