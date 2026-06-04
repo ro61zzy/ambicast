@@ -28,12 +28,16 @@ export default function AnalyzeScreen() {
 
  const [result, setResult] =
   useState<TreeAnalysis | null>(null);
+  
+  const [selectedAsset, setSelectedAsset] =
+  useState<ImagePicker.ImagePickerAsset | null>(
+    null
+  );
 
 async function pickImage() {
   const response =
     await ImagePicker.launchImageLibraryAsync({
-      mediaTypes:
-        ImagePicker.MediaTypeOptions.Images,
+     mediaTypes: ["images"],
       quality: 1,
     });
 
@@ -65,32 +69,33 @@ async function pickImage() {
 
   setImage(asset.uri);
   setResult(null);
+  setSelectedAsset(asset);
 }
 
- async function analyzeImage() {
-  if (!image) {
-    Alert.alert(
-      "No Image Selected",
-      "Please select an image first."
-    );
 
+
+async function analyzeImage() {
+  console.log("BUTTON PRESSED");
+
+  if (!image) {
+    console.log("NO IMAGE");
     return;
   }
 
-  try {
-    setLoading(true);
+  console.log("IMAGE EXISTS", image);
 
-    const data =
-      await analyzeTrees(image);
+  setLoading(true);
+
+  try {
+    console.log("CALLING SERVICE");
+
+    const data = await analyzeTrees(image);
+
+    console.log("SERVICE RETURNED", data);
 
     setResult(data);
   } catch (error) {
-    console.log(error);
-
-    Alert.alert(
-      "Analysis Failed",
-      "Unable to analyze image."
-    );
+    console.log("ANALYZE ERROR", error);
   } finally {
     setLoading(false);
   }
@@ -197,13 +202,20 @@ async function pickImage() {
     label="Needs Care"
     value={result.tree_health.needs_care}
   />
-
+<MetricCard
+  label="Replace"
+  value={
+    result.tree_health
+      .needs_replacement
+  }
+/>
   <MetricCard
     label="Confidence"
     value={`${Math.round(
       result.confidence_score * 100
     )}%`}
   />
+
 </View>
 
 {result.observations?.length > 0 && (
@@ -248,6 +260,22 @@ async function pickImage() {
                 )
               )}
             </View>
+
+{result.overlay_image_url && (
+  <>
+    <Text style={styles.sectionTitle}>
+      Overlay Analysis
+    </Text>
+
+    <Image
+      source={{
+        uri: result.overlay_image_url,
+      }}
+      style={styles.overlayImage}
+    />
+  </>
+)}
+
           </>
         )}
       </ScrollView>
@@ -302,15 +330,17 @@ loaderSubText: {
 infoCard: {
   backgroundColor: CARD,
   borderRadius: 8,
-  padding: 18,
+  padding: 20,
   marginBottom: 20,
+  borderWidth: 1,
+  borderColor: "rgba(46,230,197,0.15)",
 },
 
 infoTitle: {
-  color: "white",
-  fontSize: 16,
-  fontWeight: "600",
-  marginBottom: 1,
+  color: ACCENT,
+  fontSize: 18,
+  fontWeight: "700",
+  marginBottom: 8,
 },
 
 infoText: {
@@ -355,7 +385,7 @@ infoText: {
     marginTop: 20,
     backgroundColor: ACCENT,
     paddingVertical: 16,
-    borderRadius: 20,
+    borderRadius: 10,
     alignItems: "center",
   },
 
@@ -417,4 +447,10 @@ infoText: {
     lineHeight: 24,
     marginBottom: 10,
   },
+  overlayImage: {
+  width: "100%",
+  height: 260,
+  borderRadius: 24,
+  marginTop: 12,
+},
 });
