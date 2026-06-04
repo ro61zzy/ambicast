@@ -1,13 +1,16 @@
-import { useEffect } from "react";
 import { getCurrentLocation } from "@/services/location.service";
 import { useLocationStore } from "@/store/location.store";
+import { useEffect } from "react";
 import {
-  SafeAreaView,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
+    Platform,
+    ScrollView,
+    StyleSheet,
+    Text,
+    View
 } from "react-native";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
+
+
 
 const weather = {
   city: "Nairobi",
@@ -18,6 +21,8 @@ const weather = {
 };
 
 export default function HomeScreen() {
+
+    const insets = useSafeAreaInsets();
 
 const setLocation =
   useLocationStore((state) => state.setLocation);
@@ -50,14 +55,18 @@ useEffect(() => {
     <SafeAreaView style={styles.container}>
       <ScrollView
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: 120 }}
+        contentContainerStyle={{
+    paddingTop: Platform.OS === "android" ? 18 :0,
+    paddingBottom: 12,
+  }}
+
       >
         <Text style={styles.greeting}>Good Afternoon 👋</Text>
 
         <Text style={styles.title}>AmbiCast</Text>
 
         <View style={styles.hero}>
-          <Text style={styles.city}>{city}</Text>
+          <Text style={styles.city}>{city} 📍</Text>
 
           <Text style={styles.temp}>
             {weather.temperature}°
@@ -151,7 +160,7 @@ const styles = StyleSheet.create({
 
   title: {
     color: "white",
-    fontSize: 32,
+    fontSize: 30,
     fontWeight: "700",
     marginTop: 8,
     marginBottom: 24,
@@ -162,6 +171,7 @@ const styles = StyleSheet.create({
     borderRadius: 24,
     padding: 24,
     marginBottom: 20,
+    alignItems:"center"
   },
 
   city: {
@@ -177,7 +187,7 @@ const styles = StyleSheet.create({
 
   condition: {
     color: ACCENT,
-    fontSize: 18,
+    fontSize: 16,
   },
 
   card: {
@@ -203,7 +213,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     flexWrap: "wrap",
     justifyContent: "space-between",
-    marginBottom: 20,
+    marginBottom: 8,
   },
 
   metricCard: {

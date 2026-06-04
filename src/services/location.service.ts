@@ -11,18 +11,22 @@ export async function getCurrentLocation() {
   const location =
     await Location.getCurrentPositionAsync({});
 
-  const address =
-    await Location.reverseGeocodeAsync({
-      latitude: location.coords.latitude,
-      longitude: location.coords.longitude,
-    });
+ const address = await Location.reverseGeocodeAsync({
+  latitude: location.coords.latitude,
+  longitude: location.coords.longitude,
+});
 
-  return {
-    latitude: location.coords.latitude,
-    longitude: location.coords.longitude,
-    city:
-      address[0]?.city ||
-      address[0]?.district ||
-      "Unknown",
-  };
+const place = address[0];
+
+const city =
+  place?.city ||
+  place?.subregion ||
+  place?.region ||
+  "Unknown";
+
+return {
+  latitude: location.coords.latitude,
+  longitude: location.coords.longitude,
+  city,
+};
 }
