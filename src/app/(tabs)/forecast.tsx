@@ -1,19 +1,15 @@
+import { getWeather } from "@/services/weather";
+import { useLocationStore } from "@/store/location.store";
+import { WeatherResponse } from "@/types/weather";
+import { useEffect, useState } from "react";
 import {
+  ActivityIndicator,
   ScrollView,
   StyleSheet,
   Text,
-  View,
-  ActivityIndicator
+  View
 } from "react-native";
-import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
-import { useEffect, useState } from "react";
-import { WeatherResponse } from "@/types/weather";
-import { getWeather } from "@/services/weather";
-import { useLocationStore } from "@/store/location.store";
-import {
-  Feather,
-  MaterialCommunityIcons,
-} from "@expo/vector-icons";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function ForecastScreen() {
 
@@ -85,20 +81,18 @@ if (loading || !weather) {
   );
 }
 
-const now = new Date();
+const bestDay = [...weather.daily].sort(
+  (a, b) =>
+    a.precipitation_probability -
+    b.precipitation_probability
+)[0];
 
-const upcomingHours = weather.hourly
-  .filter((hour) => {
-    return new Date(hour.time) >= now;
-  })
-  .slice(0, 12);
 
   return (
      <SafeAreaView style={styles.container}>
 
     <ScrollView
       contentContainerStyle={{
-        paddingBottom: 120,
       }}
       showsVerticalScrollIndicator={false}
     >
@@ -110,109 +104,84 @@ const upcomingHours = weather.hourly
         {city} 📍
       </Text>
 
-     <View style={styles.heroCard}>
-  <Text style={styles.heroLocation}>
-    {city}
+      <Text style={{color: "white",
+    fontSize: 17,
+    fontWeight: "600",
+    marginBottom: 10,}}>
+  Best Day This Week
+</Text>
+
+<View style={styles.bestDayCard}>
+  <Text style={styles.bestDayName}>
+    {new Date(
+      bestDay.date
+    ).toLocaleDateString("en-US", {
+      weekday: "long",
+    })}
   </Text>
 
-  <Text style={styles.heroTemp}>
-    {Math.round(weather.current.temperature)}°
+  <View style={{ width: "100%" }}>
+  <Text style={styles.bestDayTemp}>
+    {Math.round(bestDay.temp_max)}°
   </Text>
-
-  <Text style={styles.heroCondition}>
-    Wind {Math.round(weather.current.wind_speed)} km/h
+  <Text style={styles.bestDayText}>
+    Only {bestDay.precipitation_probability}%
+    chance of rain
   </Text>
-
-  <View style={styles.heroBadge}>
-    <Text style={styles.heroBadgeText}>
-      Next 7 Days Outlook
-    </Text>
-  </View>
 </View>
 
-      <Text style={styles.sectionTitle}>
-        Hourly Forecast
-      </Text>
+</View>
 
-     <ScrollView
-  horizontal
-  showsHorizontalScrollIndicator={false}
->
-  {upcomingHours.map((hour) => (
+<Text style={styles.sectionTitle}>
+  Rain Outlook
+</Text>
+
+<View style={styles.rainOutlookCard}>
+  {weather.daily.map((day) => (
     <View
-      key={hour.time}
-      style={styles.hourCard}
+      key={day.date}
+      style={styles.rainRow}
     >
-      <Text style={styles.hourTime}>
+      <Text style={styles.rainDay}>
         {new Date(
-          hour.time
-        ).toLocaleTimeString([], {
-          hour: "numeric",
+          day.date
+        ).toLocaleDateString("en-US", {
+          weekday: "short",
         })}
       </Text>
 
-      <Text style={styles.hourTemp}>
-        {Math.round(
-          hour.temperature
-        )}
-        °
-      </Text>
-
-      <Text
+      <View
         style={{
-          color: ACCENT,
-          marginTop: 6,
+          flex: 1,
+          height: 6,
+          backgroundColor: "#12243A",
+          borderRadius: 10,
+          marginHorizontal: 12,
         }}
       >
-        {hour.precipitation_probability}%
+        <View
+          style={{
+            width: `${day.precipitation_probability}%`,
+            height: 6,
+            backgroundColor: ACCENT,
+            borderRadius: 10,
+          }}
+        />
+      </View>
+
+      <Text style={styles.rainPercent}>
+        {day.precipitation_probability}%
       </Text>
     </View>
   ))}
-</ScrollView>
-
- <Text style={styles.sectionTitle}>
-  Sunrise & Sunset
-</Text>
-
-<View style={styles.sunRow}>
-  <View style={styles.sunItem}>
-    <Feather
-      name="sunrise"
-      size={28}
-      color={ACCENT}
-    />
-
-    <Text style={styles.sunLabel}>
-      Sunrise
-    </Text>
-
-    <Text style={styles.sunValue}>
-      {weather.daily[0].sunrise
-        .split("T")[1]}
-    </Text>
-  </View>
-
-  <View style={styles.sunItem}>
-    <Feather
-      name="sunset"
-      size={28}
-      color={ACCENT}
-    />
-
-    <Text style={styles.sunLabel}>
-      Sunset
-    </Text>
-
-    <Text style={styles.sunValue}>
-      {weather.daily[0].sunset
-        .split("T")[1]}
-    </Text>
-  </View>
 </View>
 
       <Text style={styles.sectionTitle}>
-        7 Day Forecast
-      </Text>
+        
+    Weather forecast for the week ahead
+  </Text>
+
+  
 
       <View style={styles.dailyContainer}>
   {weather.daily.map((day) => (
@@ -243,17 +212,17 @@ const upcomingHours = weather.hourly
     </Text>
   </View>
 
-  <View style={styles.tempContainer}>
-    <Text style={styles.tempLabel}>
-      High / Low
-    </Text>
+ <View style={styles.tempContainer}>
+  <Text style={styles.tempLabel}>
+    High / Low
+  </Text>
 
-    <Text style={styles.tempValue}>
-      {Math.round(day.temp_max)}°
-      {" / "}
-      {Math.round(day.temp_min)}°
-    </Text>
-  </View>
+  <Text style={styles.tempValue}>
+    {Math.round(day.temp_max)}°
+    {" / "}
+    {Math.round(day.temp_min)}°
+  </Text>
+</View>
     </View>
   ))}
 
@@ -288,24 +257,53 @@ const styles = StyleSheet.create({
     marginTop: 6,
     marginBottom: 24,
   },
-
- heroCard: {
+bestDayCard: {
   backgroundColor: CARD,
-  borderRadius: 30,
+  borderRadius: 12,
   padding: 24,
+  marginBottom: 17,
+},
+
+bestDayName: {
+  color: ACCENT,
+  fontSize: 20,
+},
+
+bestDayTemp: {
+  color: "white",
+  fontSize: 28,
+  fontWeight: "700",
+  textAlign:"right"
+},
+
+bestDayText: {
+  color: "#94A3B8",
+  marginTop: 8,
+   textAlign:"right"
+},
+
+rainOutlookCard: {
+  backgroundColor: CARD,
+  borderRadius: 12,
+  padding: 18,
   marginBottom: 24,
 },
 
-heroLocation: {
-  color: "#94A3B8",
-  fontSize: 18,
+rainRow: {
+  flexDirection: "row",
+  alignItems: "center",
+  marginVertical: 10,
 },
 
-heroTemp: {
+rainDay: {
+  width: 40,
   color: "white",
-  fontSize: 72,
-  fontWeight: "700",
-  marginTop: 8,
+},
+
+rainPercent: {
+  color: ACCENT,
+  width: 40,
+  textAlign: "right",
 },
 
 heroCondition: {
@@ -313,59 +311,22 @@ heroCondition: {
   fontSize: 16,
   marginTop: 6,
 },
-
-heroBadge: {
-  alignSelf: "flex-start",
-  backgroundColor: "#12243A",
-  paddingHorizontal: 12,
-  paddingVertical: 8,
-  borderRadius: 20,
-  marginTop: 16,
-},
-
-heroBadgeText: {
-  color: ACCENT,
-  fontSize: 12,
-},
-
   sectionTitle: {
     color: "white",
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: "600",
-    marginBottom: 16,
+    marginBottom: 10,
   },
-
-  hourCard: {
-    width: 90,
-    backgroundColor: CARD,
-    borderRadius: 20,
-    padding: 14,
-    marginRight: 10,
-    alignItems: "center",
-    marginBottom: 20,
-  },
-
-  hourTime: {
-    color: "#94A3B8",
-    marginBottom: 8,
-  },
-
-  hourTemp: {
-    color: "white",
-    fontSize: 28,
-    fontWeight: "700",
-  },
-
   dailyContainer: {
     backgroundColor: CARD,
-    borderRadius: 24,
-    padding: 12,
+    borderRadius: 10,
+    paddingHorizontal: 12,
   },
 
   dailyRow: {
   flexDirection: "row",
   alignItems: "center",
-  paddingVertical: 16,
+  paddingVertical: 8,
   borderBottomWidth: 1,
   borderBottomColor: "#12243A",
 },
@@ -375,51 +336,14 @@ heroBadgeText: {
     width: 50,
     fontSize: 14,
   },
-
-  icon: {
-    fontSize: 15,
-  },
-
-  tempRange: {
-    color: "white",
-    fontWeight: "600",
-    fontSize: 14,
-  },
-
-  sunRow: {
-  flexDirection: "row",
-  justifyContent: "space-between",
-  marginTop: 16,
-},
-sunLabel: {
-  color: "#94A3B8",
-  fontSize: 14,
-  marginTop: 12,
-},
-sunValue: {
-  color: "white",
-  fontSize: 24,
-  fontWeight: "700",
-  marginTop: 8,
-},
-sunItem: {
-  flex: 1,
-  backgroundColor: CARD,
-  borderRadius: 20,
-  padding: 20,
-  alignItems: "center",
-  marginHorizontal: 6,
-},
 rainContainer: {
   alignItems: "center",
   marginRight: 18,
 },
-
 rainLabel: {
   color: "#64748B",
   fontSize: 10,
 },
-
 rainValue: {
   color: ACCENT,
   fontWeight: "600",
@@ -428,12 +352,10 @@ rainValue: {
 tempContainer: {
   alignItems: "flex-end",
 },
-
 tempLabel: {
   color: "#64748B",
   fontSize: 10,
 },
-
 tempValue: {
   color: "white",
   fontWeight: "600",

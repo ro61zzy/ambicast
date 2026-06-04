@@ -96,7 +96,7 @@ const upcomingHours = weather.hourly
   .filter((hour: any) => {
     return new Date(hour.time) >= now;
   })
-  .slice(0, 8);
+  .slice(0, 12);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -221,28 +221,37 @@ const upcomingHours = weather.hourly
 <ScrollView
   horizontal
   showsHorizontalScrollIndicator={false}
-  style={{ marginBottom: 2 }}
 >
-{upcomingHours.map((hour) => (
+  {upcomingHours.map((hour) => (
     <View
       key={hour.time}
       style={styles.hourCard}
     >
       <Text style={styles.hourTime}>
-        {new Date(hour.time).toLocaleTimeString([], {
+        {new Date(
+          hour.time
+        ).toLocaleTimeString([], {
           hour: "numeric",
         })}
       </Text>
 
       <Text style={styles.hourTemp}>
-        {Math.round(hour.temperature)}°
+        {Math.round(
+          hour.temperature
+        )}
+        °
       </Text>
 
-      <Text style={styles.hourRain}>
+      <Text
+        style={{
+          color: ACCENT,
+          marginTop: 6,
+        }}
+      >
         {hour.precipitation_probability}%
       </Text>
     </View>
-))}
+  ))}
 </ScrollView>
 
 
