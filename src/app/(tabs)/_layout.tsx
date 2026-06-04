@@ -14,12 +14,15 @@ export default function TabLayout() {
       screenOptions={{
         headerShown: false,
         tabBarStyle: {
-          backgroundColor: BG,
-          borderTopWidth: 0,
-          height: 85,
-          paddingBottom: 12,
-          paddingTop: 8,
-        },
+  position: "absolute",
+  left: 16,
+  right: 16,
+  bottom: 16,
+  height: 80,
+  borderRadius: 2,
+  backgroundColor: "#0B1A2C",
+  borderTopWidth: 0,
+},
         tabBarActiveTintColor: ACTIVE,
         tabBarInactiveTintColor: INACTIVE,
       }}

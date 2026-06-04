@@ -10,6 +10,8 @@ import {
   View
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { LineChart } from "react-native-chart-kit";
+import { Dimensions } from "react-native";
 
 export default function ForecastScreen() {
 
@@ -87,6 +89,24 @@ const bestDay = [...weather.daily].sort(
     b.precipitation_probability
 )[0];
 
+const temperatureTrendData = {
+  labels: weather.daily.map((day) =>
+    new Date(day.date).toLocaleDateString(
+      "en-US",
+      {
+        weekday: "short",
+      }
+    )
+  ),
+
+  datasets: [
+    {
+      data: weather.daily.map((day) =>
+        Math.round(day.temp_max)
+      ),
+    },
+  ],
+};
 
   return (
      <SafeAreaView style={styles.container}>
@@ -132,54 +152,48 @@ const bestDay = [...weather.daily].sort(
 
 </View>
 
+
 <Text style={styles.sectionTitle}>
-  Rain Outlook
+  Temperature Trend
 </Text>
 
-<View style={styles.rainOutlookCard}>
-  {weather.daily.map((day) => (
-    <View
-      key={day.date}
-      style={styles.rainRow}
-    >
-      <Text style={styles.rainDay}>
-        {new Date(
-          day.date
-        ).toLocaleDateString("en-US", {
-          weekday: "short",
-        })}
-      </Text>
+<View style={styles.chartCard}>
+  <LineChart
+    data={temperatureTrendData}
+    width={Dimensions.get("window").width - 70}
+    height={220}
+    yAxisSuffix="°"
+    withInnerLines={false}
+    withOuterLines={false}
+    withShadow={false}
+    chartConfig={{
+      backgroundGradientFrom: CARD,
+      backgroundGradientTo: CARD,
 
-      <View
-        style={{
-          flex: 1,
-          height: 6,
-          backgroundColor: "#12243A",
-          borderRadius: 10,
-          marginHorizontal: 12,
-        }}
-      >
-        <View
-          style={{
-            width: `${day.precipitation_probability}%`,
-            height: 6,
-            backgroundColor: ACCENT,
-            borderRadius: 10,
-          }}
-        />
-      </View>
+      decimalPlaces: 0,
 
-      <Text style={styles.rainPercent}>
-        {day.precipitation_probability}%
-      </Text>
-    </View>
-  ))}
+      color: (opacity = 1) =>
+        `rgba(46, 230, 197, ${opacity})`,
+
+      labelColor: (opacity = 1) =>
+        `rgba(255,255,255,${opacity})`,
+
+      propsForDots: {
+        r: "5",
+        strokeWidth: "2",
+        stroke: "#2EE6C5",
+      },
+    }}
+    bezier
+    style={{
+      borderRadius: 20,
+    }}
+  />
 </View>
 
-      <Text style={styles.sectionTitle}>
-        
-    Weather forecast for the week ahead
-  </Text>
+      <Text style={styles.sectionTitle}>   
+        Weather forecast for the week ahead
+     </Text>
 
   
 
@@ -281,35 +295,12 @@ bestDayText: {
   marginTop: 8,
    textAlign:"right"
 },
-
-rainOutlookCard: {
+chartCard: {
   backgroundColor: CARD,
   borderRadius: 12,
-  padding: 18,
+  paddingVertical: 17,
+  paddingHorizontal: 10,
   marginBottom: 24,
-},
-
-rainRow: {
-  flexDirection: "row",
-  alignItems: "center",
-  marginVertical: 10,
-},
-
-rainDay: {
-  width: 40,
-  color: "white",
-},
-
-rainPercent: {
-  color: ACCENT,
-  width: 40,
-  textAlign: "right",
-},
-
-heroCondition: {
-  color: ACCENT,
-  fontSize: 16,
-  marginTop: 6,
 },
   sectionTitle: {
     color: "white",
