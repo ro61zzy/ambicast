@@ -26,7 +26,7 @@ AmbiCast helps users:
 
 ### Insights
 
-![Insights](./assets/screenshots/insights_android-expo.jpeg_)
+![Insights](./assets/screenshots/insights_android-expo.jpeg)
 
 ### Analyze
 
