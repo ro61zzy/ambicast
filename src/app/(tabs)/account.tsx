@@ -15,7 +15,7 @@ const BG = "#06111F";
 const CARD = "#0B1A2C";
 const ACCENT = "#2EE6C5";
 
-export default function ProfileScreen() {
+export default function AccountScreen() {
   const city = useLocationStore(
     (state) => state.city
   );
@@ -59,41 +59,26 @@ export default function ProfileScreen() {
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{
-          paddingBottom: 120,
+          paddingBottom: 9,
         }}
       >
         <Text style={styles.title}>
-          Profile
+          Account
         </Text>
 
         <View style={styles.profileCard}>
-          <View style={styles.avatar}>
-            <Feather
-              name="cloud"
-              size={32}
-              color={ACCENT}
-            />
-          </View>
+  <Text style={styles.accountLabel}>
+    Current Plan
+  </Text>
 
-          <Text style={styles.appName}>
-            AmbiCast
-          </Text>
+  <Text style={styles.planName}>
+    {usage.plan.toUpperCase()}
+  </Text>
 
-          <Text style={styles.plan}>
-            {usage.plan.toUpperCase()} PLAN
-          </Text>
-        </View>
-
-        <View style={styles.card}>
-          <Text style={styles.cardTitle}>
-            Current Location
-          </Text>
-
-          <Text style={styles.cardValue}>
-            {city || "Unknown"} 📍
-          </Text>
-        </View>
-
+  <Text style={styles.planDescription}>
+    Weather AI API Access
+  </Text>
+</View>
         <View style={styles.grid}>
           <MetricCard
             label="Requests Used"
@@ -124,40 +109,54 @@ export default function ProfileScreen() {
           />
         </View>
 
-        <View style={styles.card}>
-          <Text style={styles.cardTitle}>
-            Billing Period
-          </Text>
+<View style={styles.card}>
+  <Text style={styles.cardTitle}>
+    Request Usage
+  </Text>
 
-          <Text style={styles.period}>
-            {new Date(
-              usage.period.start
-            ).toLocaleDateString()}
-          </Text>
+  <Text style={styles.bigNumber}>
+    {usage.period.requestCount} /{" "}
+    {usage.limits.requests}
+  </Text>
 
-          <Text style={styles.periodArrow}>
-            ↓
-          </Text>
+  <View style={styles.progressTrack}>
+    <View
+      style={[
+        styles.progressFill,
+        {
+          width: `${
+            (usage.period.requestCount /
+              usage.limits.requests) *
+            100
+          }%`,
+        },
+      ]}
+    />
+  </View>
+</View>
+       <View style={styles.card}>
+  <Text style={styles.cardTitle}>
+    Billing Period
+  </Text>
 
-          <Text style={styles.period}>
-            {new Date(
-              usage.period.end
-            ).toLocaleDateString()}
-          </Text>
-        </View>
+  <View style={styles.periodRow}>
+    <Text style={styles.period}>
+      {new Date(
+        usage.period.start
+      ).toLocaleDateString()}
+    </Text>
 
-        <View style={styles.card}>
-          <Text style={styles.cardTitle}>
-            About AmbiCast
-          </Text>
+    <Text style={styles.periodArrow}>
+      →
+    </Text>
 
-          <Text style={styles.about}>
-            AmbiCast is a mobile weather and
-            environmental intelligence
-            application powered by Weather AI
-            APIs.
-          </Text>
-        </View>
+    <Text style={styles.period}>
+      {new Date(
+        usage.period.end
+      ).toLocaleDateString()}
+    </Text>
+  </View>
+</View>
       </ScrollView>
     </SafeAreaView>
   );
@@ -207,26 +206,10 @@ const styles = StyleSheet.create({
 
   profileCard: {
     backgroundColor: CARD,
-    borderRadius: 28,
+    borderRadius: 10,
     padding: 24,
     alignItems: "center",
     marginBottom: 20,
-  },
-
-  avatar: {
-    width: 72,
-    height: 72,
-    borderRadius: 36,
-    backgroundColor: "rgba(46,230,197,0.1)",
-    justifyContent: "center",
-    alignItems: "center",
-    marginBottom: 12,
-  },
-
-  appName: {
-    color: "white",
-    fontSize: 24,
-    fontWeight: "700",
   },
 
   plan: {
@@ -234,10 +217,69 @@ const styles = StyleSheet.create({
     marginTop: 6,
     fontWeight: "600",
   },
+  accountLabel: {
+  color: "#94A3B8",
+  fontSize: 14,
+  marginBottom: 8,
+},
+
+planName: {
+  color: "white",
+  fontSize: 25,
+  fontWeight: "700",
+},
+
+planDescription: {
+  color: ACCENT,
+  marginTop: 8,
+  fontSize: 14,
+},
+
+bigNumber: {
+  color: "white",
+  fontSize: 20,
+  fontWeight: "700",
+  marginBottom: 18,
+},
+
+progressTrack: {
+  height: 10,
+  borderRadius: 999,
+  backgroundColor: "#1E293B",
+  overflow: "hidden",
+},
+
+progressFill: {
+  height: "100%",
+  backgroundColor: ACCENT,
+  borderRadius: 999,
+},
+
+periodRow: {
+  flexDirection: "row",
+  justifyContent: "space-between",
+  alignItems: "center",
+},
+version: {
+  color: ACCENT,
+  marginTop: 14,
+  fontWeight: "600",
+},
+periodArrow: {
+  color: ACCENT,
+  fontSize: 18,
+  fontWeight: "700",
+},
+
+period: {
+  color: "white",
+  fontSize: 16,
+  fontWeight: "600",
+},
 
   card: {
     backgroundColor: CARD,
-    borderRadius: 24,
+    borderRadius: 10,
     padding: 20,
     marginBottom: 16,
   },
@@ -263,7 +305,7 @@ const styles = StyleSheet.create({
   metricCard: {
     width: "48%",
     backgroundColor: CARD,
-    borderRadius: 24,
+    borderRadius: 10,
     padding: 20,
     marginBottom: 16,
   },
@@ -278,22 +320,5 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontWeight: "700",
     marginTop: 10,
-  },
-
-  period: {
-    color: "white",
-    fontSize: 18,
-    fontWeight: "600",
-  },
-
-  periodArrow: {
-    color: ACCENT,
-    fontSize: 22,
-    marginVertical: 10,
-  },
-
-  about: {
-    color: "#CBD5E1",
-    lineHeight: 24,
   },
 });

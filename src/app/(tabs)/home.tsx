@@ -104,7 +104,7 @@ const upcomingHours = weather.hourly
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{
     paddingTop: Platform.OS === "android" ? 18 :0,
-    paddingBottom: 12,
+    paddingBottom: 15,
   }}
 
       >

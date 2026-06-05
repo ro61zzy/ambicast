@@ -2,7 +2,7 @@ const API_KEY = process.env.EXPO_PUBLIC_WEATHER_API_KEY;
 
 export async function getWeather(lat: number, lon: number) {
   const response = await fetch(
-    `https://api.weather-ai.co/v1/weather?lat=${lat}&lon=${lon}`,
+    `https://api.weather-ai.co/v1/weather?lat=${lat}&lon=${lon}&ai=false`,
     {
       headers: {
         Authorization: `Bearer ${API_KEY}`,
