@@ -1,6 +1,6 @@
 # AmbiCast 🌦️
 
-A modern weather intelligence mobile application built with Expo, React Native, TypeScript, and the Weather AI API.
+A modern weather intelligence mobile application built with Expo, React Native, TypeScript, and the [Weather AI API](https://weather-ai.co).
 
 ## Overview
 
@@ -106,7 +106,7 @@ Maximum upload size:
 - TypeScript
 - Expo Router
 - Zustand
-- Weather AI API
+- [Weather AI API](https://weather-ai.co)
 - React Native Chart Kit
 
 ---
@@ -130,7 +130,12 @@ src/
 └── components/
 ```
 
----
+## API Provider
+
+- Weather AI: https://weather-ai.co
+- Documentation: https://docs.weather-ai.co
+
+
 
 ## State Management
 
