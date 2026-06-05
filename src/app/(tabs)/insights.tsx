@@ -83,7 +83,7 @@ const upcomingHours =
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{
-          paddingBottom: 120,
+          paddingBottom: 60,
         }}
       >
         <Text style={styles.title}>
@@ -131,58 +131,73 @@ const upcomingHours =
           ))}
         </ScrollView>
 
-        {loading ? (
-          <ActivityIndicator
-            color={ACCENT}
-            size="large"
-          />
-        ) : (
-          <>
-          {weather && bestDay && (
-        <View style={styles.heroCard}>
-  <Text style={styles.heroCity}>
-    {selectedCity.name}
-  </Text>
+       {loading ? (
+  <ActivityIndicator
+    color={ACCENT}
+    size="large"
+  />
+) : (
+  <>
+  {weather && (
+    <>
+      {bestDay && (
+  <View style={styles.heroCard}>
+    <Text style={styles.heroCity}>
+      {selectedCity.name}
+    </Text>
 
-  <View style={styles.heroRow}>
-    <View>
-      <Text style={styles.heroTemp}>
-        {weather?.current?.temperature}°
-      </Text>
+    <View style={styles.heroContent}>
+      <View>
+        <Text style={styles.heroTemp}>
+          {Math.round(
+            weather.current.temperature
+          )}
+          °
+        </Text>
 
-      <Text style={styles.heroLabel}>
-        Current
-      </Text>
-    </View>
+        <Text style={styles.heroLabel}>
+          Current Temperature
+        </Text>
+      </View>
 
-    <View style={styles.bestDayContainer}>
-      <Text style={styles.bestDayName}>
-        {new Date(
-          bestDay.date
-        ).toLocaleDateString("en-US", {
-          weekday: "long",
-        })}
-      </Text>
+      <View style={styles.heroDivider} />
 
-      <Text style={styles.bestDayTemp}>
-        {bestDay.temp_max}°
-      </Text>
+      <View style={styles.bestDayContainer}>
+        <Text style={styles.bestDayLabel}>
+          Best Day
+        </Text>
 
-      <Text style={styles.bestDayMeta}>
-        {bestDay.precipitation_probability}%
-        {" "}Rain
-      </Text>
+        <Text style={styles.bestDayName}>
+          {new Date(
+            bestDay.date
+          ).toLocaleDateString("en-US", {
+            weekday: "long",
+          })}
+        </Text>
+
+        <Text style={styles.bestDayTemp}>
+          {Math.round(bestDay.temp_max)}°
+        </Text>
+
+        <Text style={styles.bestDayMeta}>
+          {bestDay.precipitation_probability}
+          % Rain
+        </Text>
+      </View>
     </View>
   </View>
-</View>
 )}
-<Text style={styles.sectionTitle}>
+
+  <Text style={styles.sectionTitle}>
   Hourly Outlook
 </Text>
 
 <ScrollView
   horizontal
   showsHorizontalScrollIndicator={false}
+  contentContainerStyle={{
+    paddingBottom: 12,
+      }}
 >
   {upcomingHours.map((hour) => (
     <View
@@ -224,61 +239,54 @@ const upcomingHours =
               7 Day Outlook
             </Text>
 
-            <View
-              style={styles.forecastCard}
-            >
-              {weather?.daily?.map(
-                (
-                  day: any,
-                  index: number
-                ) => (
-                  <View
-                    key={day.date}
-                    style={
-                      styles.dayRow
-                    }
-                  >
-                    <Text
-                      style={
-                        styles.dayName
-                      }
-                    >
-                      {new Date(
-                        day.date
-                      ).toLocaleDateString(
-                        "en-US",
-                        {
-                          weekday:
-                            "short",
-                        }
-                      )}
-                    </Text>
+             <View style={styles.dailyContainer}>
+             {weather.daily.map((day) => (
+               <View
+                 key={day.date}
+                 style={styles.dailyRow}
+               >
+                 <Text style={styles.day}>
+                   {new Date(
+                     day.date
+                   ).toLocaleDateString(
+                     "en-US",
+                     {
+                       weekday: "short",
+                     }
+                   )}
+                 </Text>
+           
+                <View style={{ flex: 1 }} />
+           
+             <View style={styles.rainContainer}>
+               <Text style={styles.rainLabel}>
+                 Rain
+               </Text>
+           
+               <Text style={styles.rainValue}>
+                 {day.precipitation_probability}%
+               </Text>
+             </View>
+           
+            <View style={styles.tempContainer}>
+             <Text style={styles.tempLabel}>
+               High / Low
+             </Text>
+           
+             <Text style={styles.tempValue}>
+               {Math.round(day.temp_max)}°
+               {" / "}
+               {Math.round(day.temp_min)}°
+             </Text>
+           </View>
+               </View>
+             ))}
+      </View>
+      </>
+    )}
+  </>
+)}
 
-                    <Text
-                      style={
-                        styles.rain
-                      }
-                    >
-                      {
-                        day.precipitation_probability
-                      }
-                      %
-                    </Text>
-
-                    <Text
-                      style={
-                        styles.tempRange
-                      }
-                    >
-                      {day.temp_max}° /{" "}
-                      {day.temp_min}°
-                    </Text>
-                  </View>
-                )
-              )}
-            </View>
-          </>
-        )}
       </ScrollView>
     </SafeAreaView>
   );
@@ -325,18 +333,18 @@ activeText: {
 
 heroCard: {
   backgroundColor: CARD,
-  borderRadius: 28,
+  borderRadius: 12,
   padding: 24,
-  marginBottom: 24,
+  marginBottom: 18,
 },
 
 heroCity: {
   color: "#94A3B8",
-  fontSize: 18,
-  marginBottom: 24,
+  fontSize: 16,
+  marginBottom: 20,
 },
 
-heroRow: {
+heroContent: {
   flexDirection: "row",
   justifyContent: "space-between",
   alignItems: "center",
@@ -344,37 +352,54 @@ heroRow: {
 
 heroTemp: {
   color: "white",
-  fontSize: 48,
+  fontSize: 54,
   fontWeight: "700",
 },
 
 heroLabel: {
   color: "#94A3B8",
   marginTop: 4,
-  fontSize: 14,
+},
+
+heroDivider: {
+  width: 1,
+  height: 90,
+  backgroundColor: "#12243B",
+},
+
+sectionTitle: {
+  color: "white",
+  fontSize: 22,
+  fontWeight: "700",
+  marginBottom: 16,
 },
 
 bestDayContainer: {
   alignItems: "flex-end",
 },
 
+bestDayLabel: {
+  color: "#94A3B8",
+  fontSize: 13,
+},
+
 bestDayName: {
   color: ACCENT,
   fontSize: 18,
   fontWeight: "700",
+  marginTop: 4,
 },
 
 bestDayTemp: {
   color: "white",
-  fontSize: 32,
+  fontSize: 28,
   fontWeight: "700",
-  marginTop: 4,
+  marginTop: 6,
 },
 
 bestDayMeta: {
   color: "#CBD5E1",
   marginTop: 4,
-  fontSize: 14,
 },
 
 hourCard: {
@@ -400,41 +425,48 @@ hourRain: {
   marginTop: 4,
 },
 
-sectionTitle: {
-  color: "white",
-  fontSize: 22,
-  fontWeight: "700",
-  marginBottom: 16,
-},
+  dailyContainer: {
+    backgroundColor: CARD,
+    borderRadius: 10,
+    paddingHorizontal: 12,
+  },
 
-forecastCard: {
-  backgroundColor: CARD,
-  borderRadius: 28,
-  padding: 12,
-},
-
-dayRow: {
+  dailyRow: {
   flexDirection: "row",
-  justifyContent: "space-between",
   alignItems: "center",
-  paddingVertical: 18,
-  paddingHorizontal: 8,
+  paddingVertical: 8,
   borderBottomWidth: 1,
-  borderBottomColor: "#12243B",
+  borderBottomColor: "#12243A",
 },
 
-dayName: {
-  color: "white",
-  fontSize: 16,
-  width: 60,
+  day: {
+    color: "white",
+    width: 50,
+    fontSize: 14,
+  },
+rainContainer: {
+  alignItems: "center",
+  marginRight: 18,
 },
-
-rain: {
+rainLabel: {
+  color: "#64748B",
+  fontSize: 10,
+},
+rainValue: {
   color: ACCENT,
+  fontWeight: "600",
+  marginTop: 2,
 },
-
-tempRange: {
+tempContainer: {
+  alignItems: "flex-end",
+},
+tempLabel: {
+  color: "#64748B",
+  fontSize: 10,
+},
+tempValue: {
   color: "white",
   fontWeight: "600",
+  marginTop: 2,
 },
 })

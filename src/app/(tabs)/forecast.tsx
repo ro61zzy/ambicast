@@ -1,7 +1,5 @@
-import { getWeather } from "@/services/weather";
 import { useLocationStore } from "@/store/location.store";
-import { WeatherResponse } from "@/types/weather";
-import { useEffect, useState } from "react";
+import { useWeatherStore } from "@/store/weather.store";
 import {
   ActivityIndicator,
   ScrollView,
@@ -15,47 +13,15 @@ import { Dimensions } from "react-native";
 
 export default function ForecastScreen() {
 
- const latitude = useLocationStore(
-  (state) => state.latitude
-);
-
-const longitude = useLocationStore(
-  (state) => state.longitude
-);
-
 const city = useLocationStore(
   (state) => state.city
 );
 
-const [weather, setWeather] =
-  useState<WeatherResponse | null>(null);
+const weather = useWeatherStore(
+  (state) => state.weather
+);
 
-const [loading, setLoading] =
-  useState(true);
-
-useEffect(() => {
-  async function loadForecast() {
-    try {
-      const data = await getWeather(
-        latitude!,
-        longitude!
-      );
-
-      setWeather(data);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  if (latitude && longitude) {
-    loadForecast();
-  }
-}, [latitude, longitude]);
-
-
-if (loading || !weather) {
+if (!weather) {
   return (
     <SafeAreaView style={styles.container}>
       <View
@@ -112,9 +78,10 @@ const temperatureTrendData = {
      <SafeAreaView style={styles.container}>
 
     <ScrollView
-      contentContainerStyle={{
-      }}
       showsVerticalScrollIndicator={false}
+      contentContainerStyle={{
+   paddingBottom:58
+      }}
     >
       <Text style={styles.title}>
         Forecast
@@ -312,6 +279,7 @@ chartCard: {
     backgroundColor: CARD,
     borderRadius: 10,
     paddingHorizontal: 12,
+    
   },
 
   dailyRow: {

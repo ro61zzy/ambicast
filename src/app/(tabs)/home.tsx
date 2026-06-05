@@ -1,6 +1,9 @@
 import { getCurrentLocation } from "@/services/location.service";
 import { getWeather } from "@/services/weather";
 import { useLocationStore } from "@/store/location.store";
+import { useWeatherStore } from "@/store/weather.store";
+
+
 import {
   Feather,
   MaterialCommunityIcons,
@@ -15,15 +18,17 @@ import {
   View,
   Image
 } from "react-native";
-import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
-import { WeatherResponse } from "@/types/weather";
+import { SafeAreaView} from "react-native-safe-area-context";
 
 
 
 export default function HomeScreen() {
+  const {
+  weather,
+  setWeather,
+  isFresh,
+} = useWeatherStore();
 
-const [weather, setWeather] =
-  useState<WeatherResponse | null>(null);
 const [loading, setLoading] = useState(true);
 
 
@@ -36,14 +41,8 @@ const city =
 useEffect(() => {
   async function loadLocation() {
     try {
-      const location = await getCurrentLocation();
-
-      const data = await getWeather(
-        location.latitude,
-        location.longitude
-      );
-
-      setWeather(data);
+      const location =
+        await getCurrentLocation();
 
       setLocation(
         location.latitude,
@@ -51,6 +50,24 @@ useEffect(() => {
         location.city
       );
 
+      if (isFresh() && weather) {
+        console.log(
+          "Using cached weather"
+        );
+
+        return;
+      }
+
+      console.log(
+        "Fetching fresh weather"
+      );
+
+      const data = await getWeather(
+        location.latitude,
+        location.longitude
+      );
+
+      setWeather(data);
     } catch (error) {
       console.log(error);
     } finally {
@@ -61,28 +78,32 @@ useEffect(() => {
   loadLocation();
 }, []);
 
-if (loading) {
+if (loading && !weather) {
   return (
-    <SafeAreaView style={styles.loaderContainer}>
+    <SafeAreaView
+      style={styles.loaderContainer}
+    >
       <Text style={styles.loaderTitle}>
-  AmbiCast
-</Text>
+        AmbiCast
+      </Text>
 
-<ActivityIndicator
-  size="large"
-  color="#2EE6C5"
-/>
+      <ActivityIndicator
+        size="large"
+        color="#2EE6C5"
+      />
 
-<Text style={styles.loaderText}>
-  Fetching weather data...
-</Text>
+      <Text style={styles.loaderText}>
+        Fetching weather data...
+      </Text>
     </SafeAreaView>
   );
 }
 
 if (!weather) {
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView
+      style={styles.container}
+    >
       <Text style={{ color: "white" }}>
         Unable to load weather data
       </Text>
@@ -104,7 +125,7 @@ const upcomingHours = weather.hourly
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{
     paddingTop: Platform.OS === "android" ? 18 :0,
-    paddingBottom: 15,
+    paddingBottom: 65,
   }}
 
       >
@@ -221,6 +242,7 @@ const upcomingHours = weather.hourly
 <ScrollView
   horizontal
   showsHorizontalScrollIndicator={false}
+  
 >
   {upcomingHours.map((hour) => (
     <View

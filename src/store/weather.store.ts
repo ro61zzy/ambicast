@@ -1,10 +1,14 @@
 import { create } from "zustand";
+import { WeatherResponse } from "@/types/weather";
 
 type WeatherStore = {
-  weather: any | null;
+  weather: WeatherResponse | null;
+
   fetchedAt: number | null;
 
-  setWeather: (weather: any) => void;
+  setWeather: (
+    weather: WeatherResponse
+  ) => void;
 
   isFresh: () => boolean;
 };
