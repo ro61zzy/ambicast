@@ -1,0 +1,33 @@
+{
+  "cli": {
+    "version": ">= 20.0.0",
+    "appVersionSource": "remote"
+  },
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "env": {
+        "EXPO_PUBLIC_BASE_URL": "https://api.weather-ai.co",
+        "EXPO_PUBLIC_WEATHER_API_KEY": "wai_33d5b0.fd4aa1c1557f7541f0f8495b65933411bb1cc60d287cf4df"
+      }
+    },
+    "preview": {
+      "distribution": "internal",
+      "env": {
+        "EXPO_PUBLIC_BASE_URL": "https://api.weather-ai.co",
+        "EXPO_PUBLIC_WEATHER_API_KEY": "wai_33d5b0.fd4aa1c1557f7541f0f8495b65933411bb1cc60d287cf4df"
+      }
+    },
+    "production": {
+      "autoIncrement": true,
+      "env": {
+        "EXPO_PUBLIC_BASE_URL": "https://api.weather-ai.co",
+        "EXPO_PUBLIC_WEATHER_API_KEY": "wai_33d5b0.fd4aa1c1557f7541f0f8495b65933411bb1cc60d287cf4df"
+      }
+    }
+    },
+  "submit": {
+    "production": {}
+  }
+}
