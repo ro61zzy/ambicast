@@ -16,26 +16,18 @@ AmbiCast helps users:
 
 ## Screenshots
 
-### Home
+## Screenshots
 
-![Home](./assets/screenshots/home_android-expo.jpeg)
+<p align="center">
+  <img src="./assets/screenshots/home_android-expo.jpeg" width="30%" />
+  <img src="./assets/screenshots/forecast_android-expo.jpeg" width="30%" />
+  <img src="./assets/screenshots/insights_android-expo.jpeg" width="30%" />
+</p>
 
-### Forecast
-
-![Forecast](./assets/screenshots/forecast_android-expo.jpeg)
-
-### Insights
-
-![Insights](./assets/screenshots/insights_android-expo.jpeg)
-
-### Analyze
-
-![Analyze](./assets/screenshots/analyze_android-expo.jpeg)
-
-### Account
-
-![Account](./assets/screenshots/account_iphone17_simulator.png)
-
+<p align="center">
+  <img src="./assets/screenshots/analyze_android-expo.jpeg" width="30%" />
+  <img src="./assets/screenshots/account_iphone17_simulator.png" width="30%" />
+</p>
 ---
 
 ## Features
