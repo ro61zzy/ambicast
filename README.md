@@ -21,13 +21,16 @@ AmbiCast helps users:
 <p align="center">
   <img src="./assets/screenshots/home_android-expo.jpeg" width="30%" />
   <img src="./assets/screenshots/forecast_android-expo.jpeg" width="30%" />
-  <img src="./assets/screenshots/insights_android-expo.jpeg" width="30%" />
+  <img src="./assets/screenshots/insight_android-expo.jpeg" width="30%" />
 </p>
 
 <p align="center">
   <img src="./assets/screenshots/analyze_android-expo.jpeg" width="30%" />
   <img src="./assets/screenshots/account_iphone17_simulator.png" width="30%" />
+  <img src="./assets/screenshots/splash.jpeg" width="30%" />
 </p>
+
+
 ---
 
 ## Features
